@@ -1,13 +1,3 @@
-# ========================================================
-#             Media and Cognition
-#             Homework 3 Support Vector Machine
-#             train_svm.py - Train svm model for traffic sign
-#             Student ID: 2021012824
-#             Name: 李沐晟
-#             Tsinghua University
-#             (C) Copyright 2024
-# ========================================================
-
 # ==== Part 1: import libs
 import argparse
 import random
