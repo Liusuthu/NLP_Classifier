@@ -10,7 +10,7 @@ from svm_hw import SVM_HINGE
 
 #用OvO投票法给出判决
 
-client = ZhipuAI(api_key="80cba4165a53e1602e6d631cbd0caef9.YBb0NWpvyZq7WzIe")
+client = ZhipuAI(api_key="your api key")
 test_list=['12','13','14','23','24','34']
 model_save_path=["checkpoints/svm12.pth","checkpoints/svm13.pth","checkpoints/svm14.pth",
                     "checkpoints/svm23.pth","checkpoints/svm24.pth","checkpoints/svm34.pth"]
