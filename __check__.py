@@ -1,11 +1,3 @@
-# ========================================================
-#             Media and Cognition
-#             Homework 3 Support Vector Machine
-#             check.py - Check your implementation of several modules
-#             Tsinghua University
-#             (C) Copyright 2024
-# ========================================================
-
 import torch
 from torch.autograd import gradcheck
 

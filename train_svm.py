@@ -48,7 +48,7 @@ def train(
 
 
     model_save_path="checkpoints/svm"+str(classes[0])+str(classes[1])+".pth"
-    # TODO 1: construct training and validation data loader with 'Traffic_Dataset' and DataLoader, and set proper values for 'batch_size' and 'shuffle'
+    # construct training and validation data loader with 'Traffic_Dataset' and DataLoader, and set proper values for 'batch_size' and 'shuffle'
     train_data = Traffic_Dataset(data_root+'/train'+str(classes[0])+str(classes[1])+'.pt')
     train_loader = DataLoader(train_data,batch_size=batch_size,num_workers=2,shuffle=True)
     val_data = Traffic_Dataset(data_root+'/val'+str(classes[0])+str(classes[1])+'.pt')
@@ -57,13 +57,13 @@ def train(
     # scale the regularization coefficient
     C = C * len(train_loader)
 
-    # TODO: initialize the SVM model
+    # initialize the SVM model
     svm = SVM_HINGE(in_channels=feature_channel,C=C)#param in_channels: number of feature channels for SVM input
 
-    # TODO: put the model on CPU or GPU
+    #  put the model on CPU or GPU
     svm = svm.to(device) 
 
-    # TODO: define the Adam optimizer
+    # define the Adam optimizer
     optimizer = torch.optim.Adam(svm.parameters(), lr=lr)
 
     # to save the training loss, training accuracy, validation accuracy, and the epoch index of each training epoch
@@ -73,11 +73,9 @@ def train(
     epochs = []
 
     for epoch in range(n_epoch):
-        # TODO: save the index of current epoch in the array 'epochs'
         epochs.append(epoch+1)
 
-        # TODO 2: ========================= training =======================
-        # TODO: set the model in training mode
+        #   ========================= training =======================
         svm.train()
 
         # to calculate and save the training loss and training accuracy
@@ -85,54 +83,36 @@ def train(
         n_correct = 0.  # number of images that are correctly classified
         n_feas = 0.  # number of total images
 
-        # TODO: get a batch of data; you may need enumerate() to iteratively get data from 'train_loader'.
-        # you can refer to previous homework, for example hw2
+        #get a batch of data; you may need enumerate() to iteratively get data from 'train_loader'.
         for step, (input, label) in enumerate(train_loader):
-            #print("step:",step,"---------------------")
-            # TODO: set data type (.float()) and device (.to())
             input, label = (
                 input.float().to(device),
                 label.float().to(device),
             )
-            #print("input:",input,",label:",label)
-            # print("input:",input)
-
-            # TODO: clear gradients in the optimizer
             optimizer.zero_grad()
-
-            # TODO: run the model with hinge loss; the model needs two inputs: feas and labels
-            out, loss = svm(input,label)#有问题——输出全是out
-            #print("svm_out:",out)
-            # print("out:",out)
-            # print("label:",label)
-
-            # TODO: back-propagation on the computation graph
+            out, loss = svm(input,label)
+            # back-propagation on the computation graph
             loss.backward()
 
-            # TODO: sum up of total loss, loss.item() return the value of the tensor as a standard python number
+            #sum up of total loss, loss.item() return the value of the tensor as a standard python number
             total_loss += loss.item()
 
-            # TODO: call a function to update the parameters of the models 更新模型参数
+            #  call a function to update the parameters of the models 更新模型参数
             optimizer.step()
 
-            # TODO: sum up the number of images correctly recognized. note the shapes of 'out' and 'labels' are different
+            # sum up the number of images correctly recognized. note the shapes of 'out' and 'labels' are different
             n_correct += torch.sum((out.view(1,-1)==label).float()).item()#这里存在维度问题，故使用view()进行对齐
-            #print("n_correct:",n_correct)
-            # TODO: sum up the total image number
             n_feas += input.size(0)
-            #print("n_feas:",n_feas)
 
-        # average of the total loss for iterations
-        #print("n_correct:",n_correct,"n_feas:",n_feas)
         acc = torch.tensor(100 * n_correct / n_feas)#这里做了一些更改
         avg_loss = total_loss / len(train_loader)
         train_acc.append(acc.cpu().numpy())
         train_loss.append(avg_loss)
         print('Epoch {:02d}: loss = {:.3f}, training accuracy = {:.1f}%'.format(epoch + 1, avg_loss, acc))
 
-        # TODO 3: ========================== Validation ======================================
+        #  ========================== Validation ======================================
 
-        # TODO: set the model in evaluation mode
+        # set the model in evaluation mode
         svm.eval()
 
         # to calculate and save the validation accuracy
@@ -140,26 +120,17 @@ def train(
         n_feas = 0.  # number of total images
 
         with torch.no_grad():  # we do not need to compute gradients during validation
-            # TODO: inference on the validation dataset, similar to the training stage but use 'val_loader'.
             for step, (input, label) in enumerate(val_loader):
-                # TODO: set data type (.float()) and device (.to())
                 input, label = (
                     input.float().to(device),
                     label.float().to(device),
                 )
 
-                # TODO: run the model; at the validation step, the model only needs one input: feas
-                # _ refers to a placeholder, which means we do not need the second returned value during validating
                 out, _ = svm(input,label)
-
-                # TODO: sum up the number of images correctly recognized. note the shapes of 'out' and 'labels' are different
                 n_correct += torch.sum((out.view(1,-1) == label).float()).item()
-
-                # TODO: sum up the total image number
                 n_feas += input.size(0)
 
         # show prediction accuracy
-        #print("n_correct:",n_correct,"n_feas:",n_feas)
         acc = torch.tensor(100 * n_correct / n_feas)#这里做了一些更改
         print('Epoch {:02d}: validation accuracy = {:.1f}%'.format(epoch + 1, acc))
         val_acc.append(acc.cpu().numpy())
@@ -175,7 +146,7 @@ def train(
     W = svm.W.data.cpu()
     b = svm.b.data.cpu()
 
-    # TODO 4: calculate the index of support vectors in training samples using 'train_data.datas' and 'train_data.labels'
+    # calculate the index of support vectors in training samples using 'train_data.datas' and 'train_data.labels'
     # 'sv' should be a list in python structure with the shape of [K], where K is the number of support vectors.
     sv = []
     for i, (data, label) in enumerate(zip(train_data.datas, train_data.labels)): # 使用zip同时遍历data和labels

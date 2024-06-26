@@ -1,15 +1,4 @@
-# ========================================================
-#             Media and Cognition
-#             Homework 3 Support Vector Machine
-#             svm_hw.py - The implementation of SVM using hinge loss
-#             Student ID: 202102824
-#             Name: 李沐晟
-#             Tsinghua University
-#             (C) Copyright 2024
-# ========================================================
-
 #此代码作为SVM的网络结构定义，直接迁移使用
-
 
 import torch
 import torch.nn as nn

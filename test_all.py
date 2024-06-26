@@ -3,8 +3,6 @@ import argparse
 import matplotlib.pyplot as plt
 import torch
 from torch.utils.data import DataLoader
-# import torchvision.transforms as transforms
-# from PIL import Image
 from zhipuai import ZhipuAI
 
 from datasets import Traffic_Dataset
@@ -16,8 +14,6 @@ client = ZhipuAI(api_key="80cba4165a53e1602e6d631cbd0caef9.YBb0NWpvyZq7WzIe")
 test_list=['12','13','14','23','24','34']
 model_save_path=["checkpoints/svm12.pth","checkpoints/svm13.pth","checkpoints/svm14.pth",
                     "checkpoints/svm23.pth","checkpoints/svm24.pth","checkpoints/svm34.pth"]
-# test_data_path=[data_root+'/test12.pt',data_root+'/test13.pt',data_root+'/test14.pt',
-#                 data_root+'/test23.pt',data_root+'/test24.pt',data_root+'/test34.pt']
 
 def get_vector(input):
     response = client.embeddings.create(
@@ -132,6 +128,7 @@ def loaddata(data_root, mode,classes):
                 labels.append(label)
     return torch.stack(datas), torch.tensor(labels)
 
+
 def PCA(data, dim=2):
     """
     calculate the mean value of the data and the projection matrix for PCA
@@ -141,18 +138,16 @@ def PCA(data, dim=2):
         data_mean: the mean value of the data
         u: the projection matrix for PCA, with the shape of [2048, dim]
     """
-    # TODO 2: complete the algorithm of PCA, calculate the mean value of the data and the projection matrix
-
-    # TODO: compute the mean of train_data
+    # compute the mean of train_data
     data_mean = torch.mean(data, dim=0)
-    # TODO: compute the covariance matrix of train_data
+    #  compute the covariance matrix of train_data
     centered_data = data - data_mean
     data_cov = torch.mm(centered_data.t(), centered_data) / (data.size(0) - 1)
-    # TODO: compute the SVD decompositon of data_cov using torch.linalg.svd
+    # compute the SVD decompositon of data_cov using torch.linalg.svd
     # reference: https://pytorch.org/docs/1.11/generated/torch.linalg.svd.html
     u, s, v = torch.linalg.svd(data_cov)
     u = u[:, :dim] #选取最大特征值对应的特征向量
-    # TODO: return the proper 'data_mean' and 'u[]'
+    #  return the proper 'data_mean' and 'u[]'
     return data_mean, u
 
 
@@ -161,8 +156,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_root", type=str, default="data", help="file list of training image paths and labels")
     parser.add_argument("--device", type=str, default='cpu', help="cpu or cuda")
-    #parser.add_argument("--model_save_path", type=str, default="checkpoints/svm.pth", help="path to save SVM model")
-    #parser.add_argument("--classes", default="12", help="two classes that need to be classified")
 
     args = parser.parse_args()
     if args.device is None:
@@ -171,7 +164,5 @@ if __name__ == "__main__":
     # run the testing procedure
     test(
         data_root=args.data_root,
-        #model_save_path=args.model_save_path,
         device=args.device,
-        #classes=args.classes,
     )
