@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import torch
 from zhipuai import ZhipuAI
 
-client = ZhipuAI(api_key="80cba4165a53e1602e6d631cbd0caef9.YBb0NWpvyZq7WzIe")
+client = ZhipuAI(api_key="your api key")
 
 def get_vector(input):
     response = client.embeddings.create(
